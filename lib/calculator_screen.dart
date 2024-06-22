@@ -10,6 +10,7 @@ class CalculatorScreen extends StatefulWidget {
 class _CalculatorScreenState extends State<CalculatorScreen> {
   String pressedValue = "0";
   String calculationText = "";
+  num answer = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const SizedBox(
-              height: 200,
+              height: 180,
             ),
             Padding(
               padding: const EdgeInsets.only(right: 16),
@@ -110,6 +111,31 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             if (buttonName == "C") {
               pressedValue = "0";
               calculationText = "";
+            } else if (buttonName == "=") {
+              String firstPart =
+                  calculationText.substring(0, calculationText.length - 1);
+              String middlePart =
+                  calculationText.substring(calculationText.length - 1);
+              String lastPart = pressedValue;
+              if (middlePart == "+") {
+                answer = int.parse(firstPart) + int.parse(lastPart);
+              } else if (middlePart == "-") {
+                answer = int.parse(firstPart) - int.parse(lastPart);
+              } else if (middlePart == "*") {
+                answer = int.parse(firstPart) * int.parse(lastPart);
+              } else if (middlePart == "/") {
+                answer = int.parse(firstPart) / int.parse(lastPart);
+              }
+
+              setState(() {
+                pressedValue = answer.toString();
+                calculationText = "";
+              });
+            } else if (calculationText.endsWith('+') ||
+                calculationText.endsWith('-') ||
+                calculationText.endsWith('/') ||
+                calculationText.endsWith('*')) {
+              pressedValue = buttonName;
             } else if (buttonName != "+" &&
                 buttonName != "-" &&
                 buttonName != "*" &&
@@ -127,7 +153,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 pressedValue += buttonName;
               }
             }
-
             if (buttonName == "+" ||
                 buttonName == "-" ||
                 buttonName == "*" ||
